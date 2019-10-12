@@ -1,0 +1,20 @@
+{
+    "NumberOfFiles": "10000",
+    "Period": {
+        "StartDate": "2015/1/1",
+        "EndDate": "2019/12/31"
+    },
+    "Source": [
+      {
+        "Path": "./test/source/test_1M.dat",
+        "Ratio": "1"
+      },
+      {
+        "Path": "./test/source/test_2M.dat",
+        "Ratio": "1"
+      }
+    ],
+    "Destination": {
+      "DestPath": "./test/destination"
+    }
+}
