@@ -105,3 +105,4 @@ venv.bak/
 
 # Original
 test/
+*.csv
