@@ -1,20 +1,16 @@
 {
-    "NumberOfFiles": "10000",
+    "NumberOfFiles": "100",
     "Period": {
         "StartDate": "2015/1/1",
-        "EndDate": "2019/12/31"
+        "EndDate": "2015/1/1"
     },
     "Source": [
-      {
-        "Path": "./test/source/test_1M.dat",
-        "Ratio": "1"
-      },
-      {
-        "Path": "./test/source/test_2M.dat",
-        "Ratio": "1"
-      }
+        {
+            "Path": "s3://s3-100million-files-test/original-data/test-001MB.dat",
+            "Ratio": 1
+        }
     ],
     "Destination": {
-      "DestPath": "./test/destination"
+      "DestPath": "s3://s3-100million-files-test"
     }
 }
