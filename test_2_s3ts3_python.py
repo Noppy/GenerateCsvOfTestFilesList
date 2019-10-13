@@ -50,7 +50,7 @@ def get_args():
 
     parser.add_argument('-o','--output',
         action='store',
-        default='test_2_results.csv',
+        default='results_test_2.csv',
         type=str,
         required=False,
         help='Specify output CSV file.')

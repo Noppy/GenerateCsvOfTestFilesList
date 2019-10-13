@@ -173,8 +173,6 @@ def generate_a_folder(args, config, dest_folder_path):
     return( files )
 
 
-
-
 def generate_file_list(args, config):
 
     # open CSV file for write
