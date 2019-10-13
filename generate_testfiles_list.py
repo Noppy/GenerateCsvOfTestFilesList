@@ -27,6 +27,7 @@ import json
 import csv
 import datetime
 import math
+import urlparse
 
 
 
@@ -152,12 +153,20 @@ def generate_a_folder(args, config, dest_folder_path):
 
     for src in config["Source"]:
 
+        src_urlparse = urlparse.urlparse( src["Path"] )
+        dst_urlparse = urlparse.urlparse( dest_folder_path )
+
         for i in range(0, src["Number"]):
             name,ext = os.path.splitext( os.path.basename(src["Path"]) )
             # Generate a CSV row data
             row = [
                 src["Path"],
-                os.path.join( dest_folder_path, name+"_{:06d}".format(i)+ext )
+                os.path.join( dest_folder_path, name+"_{:06d}".format(i)+ext ),
+                src_urlparse.netloc,
+                src_urlparse.path,
+                dst_urlparse.netloc,
+                os.path.join( dst_urlparse.path, name+"_{:06d}".format(i)+ext ),
+                
             ]
             files.append(row)
     
