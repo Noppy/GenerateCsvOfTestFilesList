@@ -109,3 +109,4 @@ test/
 test_3_target_list_*
 test_3_results*
 test_3_sar_*
+nohup.out

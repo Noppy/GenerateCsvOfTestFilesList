@@ -34,9 +34,11 @@ function utcserial2date {
 #------------------------
 # Main
 #------------------------
+# Start message
+echo "Start test: targetfile=${rows} parallels=${NumOfParallels}"
+
 # Split Target_List_CSV_FILE
 split -a 5 -l ${NumOfsplitLines} ${Target_List_CSV_FILE} "test_3_target_list_"
-
 
 # Lunch sar command
 SAR_FILE="${SarFile}${rows}_${NumOfParallels}"
@@ -44,6 +46,7 @@ sar -A -o ${SAR_FILE} 1 10000000 >/dev/null 2>&1 &
 SAR_PID=$!
 
 # Run by background
+echo "Run test programs."
 StartTime=$(date '+%s')
 
 i=0
@@ -59,6 +62,8 @@ do
     sleep 1
 done
 EndTime=$(date '+%s')
+echo "Done all test programs."
+
 kill -9 ${SAR_PID}
 sleep 10
 
