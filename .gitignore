@@ -107,4 +107,5 @@ venv.bak/
 test/
 *.csv
 test_3_target_list_*
+test_3_results*
 
