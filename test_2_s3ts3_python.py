@@ -22,6 +22,8 @@ from __future__ import print_function
 import sys
 import argparse
 import csv
+import logging
+import traceback
 
 import boto3
 from botocore.exceptions import ClientError
@@ -48,7 +50,7 @@ def get_args():
 
     parser.add_argument('-o','--output',
         action='store',
-        default='test_2_result.csv',
+        default='test_2_results.csv',
         type=str,
         required=False,
         help='Specify output CSV file.')
@@ -68,32 +70,42 @@ def main():
     fp_csv = open( args.input )
     reader = csv.reader(fp_csv)
 
-    fp_result = open( args.output, "w")
-    writer = csv.writer(fp_result)
+    fp_results = open( args.output, "w")
+    writer = csv.writer(fp_results, lineterminator='\n')
 
     # Get session
     s3 = boto3.client('s3')
 
     # copy 
+    results = []
     for row in reader:
-
+        # Set Source Object
         copy_source = {
-            'Bucket': src_bucket_name,
-            'Key': src_object_name
+            'Bucket': row[2],
+            'Key': row[3]
         }
-
 
         # Copy the object
         try:
             s3.copy_object(
-                CopySource=copy_source,
-                Bucket=dest_bucket_name,
-                Key=dest_object_name
+                CopySource = copy_source,
+                Bucket = row[4],
+                Key = row[5]
             )
         except ClientError as e:
             logging.error(e)
+            ret = [row[1], "Failed", e ]
+        else:
+            ret = [row[1], "Success", e ]
+        # Store a result
+        results.append( ret )
 
-    return
+    # write results
+    writer.writerows( results )
+
+    #close
+    fp_csv.close()
+    fp_results.close()
 
 if __name__ == "__main__":
     sys.exit(main())
