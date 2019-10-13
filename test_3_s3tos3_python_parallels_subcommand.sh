@@ -39,7 +39,8 @@ split -a 5 -l ${NumOfsplitLines} ${Target_List_CSV_FILE} "test_3_target_list_"
 
 
 # Lunch sar command
-sar -A -o ${SarFile}${rows}_${NumOfParallels} 1 10000000 >/dev/null 2>&1 &
+SAR_FILE="${SarFile}${rows}_${NumOfParallels}"
+sar -A -o ${SAR_FILE} 1 10000000 >/dev/null 2>&1 &
 SAR_PID=$!
 
 # Run by background
@@ -58,13 +59,18 @@ do
     sleep 1
 done
 EndTime=$(date '+%s')
+kill -9 ${SAR_PID}
+sleep 10
 
 # Print result
-echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime})" >> ${SummaryResultCSVFile}
-echo "Result: ${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime})" 
+sar_queue=$(LANG=C sar -f ${SAR_FILE} -q|tail -1)
+sar_cpu=$(LANG=C sar -f ${SAR_FILE} -p|tail -1)
+
+echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${sar_queue},${sar_cpu}" >> ${SummaryResultCSVFile}
+echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${sar_queue},${sar_cpu}"
+
 
 # Finall
-kill -9 ${SAR_PID}
 cat test_3_results_temp_* > test_3_results_${rows}_${NumOfParallels}.csv
 rm test_3_results_temp_*
 rm test_3_target_list_*
