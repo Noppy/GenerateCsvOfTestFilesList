@@ -68,14 +68,18 @@ kill -9 ${SAR_PID}
 sleep 10
 
 # Print result
+cat test_3_results_temp_* > test_3_results_${rows}_${NumOfParallels}.csv
+rm test_3_results_temp_*
+success=$(grep -c Success test_3_results_${rows}_${NumOfParallels}.csv)
+failed=$(grep -c Failed test_3_results_${rows}_${NumOfParallels}.csv)
+total=$(( success+failed ))
+
 sar_queue=$(LANG=C sar -f ${SAR_FILE} -q|tail -1)
 sar_cpu=$(LANG=C sar -f ${SAR_FILE} -p|tail -1)
 
-echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${sar_queue},${sar_cpu}" >> ${SummaryResultCSVFile}
-echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${sar_queue},${sar_cpu}"
+echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${success},${failed},${total},${sar_queue},${sar_cpu}" >> ${SummaryResultCSVFile}
+echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${success},${failed},${total},${sar_queue},${sar_cpu}"
 
 
 # Finall
-cat test_3_results_temp_* > test_3_results_${rows}_${NumOfParallels}.csv
-rm test_3_results_temp_*
 rm test_3_target_list_*

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Configuration
-ListNumOfParallels="100 200 400 800 1000 1500 2000"
+#ListNumOfParallels="100 200 400 800 1000 1500 2000"
+ListNumOfParallels="100 200 400 800"
 SummaryResultCSVFile=test_3_results_summary.csv
 ExecCommand=./test_3_s3tos3_python_parallels_subcommand.sh
 
