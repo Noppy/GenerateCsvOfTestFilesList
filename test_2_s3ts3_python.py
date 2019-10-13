@@ -96,7 +96,7 @@ def main():
             logging.error(e)
             ret = [row[1], "Failed", e ]
         else:
-            ret = [row[1], "Success", e ]
+            ret = [row[1], "Success" ]
         # Store a result
         results.append( ret )
 

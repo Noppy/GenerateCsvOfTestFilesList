@@ -163,9 +163,9 @@ def generate_a_folder(args, config, dest_folder_path):
                 src["Path"],
                 os.path.join( dest_folder_path, name+"_{:06d}".format(i)+ext ),
                 src_urlparse.netloc,
-                src_urlparse.path,
+                src_urlparse.path.strip("/"),
                 dst_urlparse.netloc,
-                os.path.join( dst_urlparse.path, name+"_{:06d}".format(i)+ext ),
+                os.path.join( dst_urlparse.path.strip("/"), name+"_{:06d}".format(i)+ext ),
                 
             ]
             files.append(row)
