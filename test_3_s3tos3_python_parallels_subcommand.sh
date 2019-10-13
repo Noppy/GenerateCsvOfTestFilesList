@@ -4,9 +4,10 @@
 Target_List_CSV_FILE="list_of_copy_files.csv"
 NumOfParallels=$1
 SummaryResultCSVFile=$2
+SarFile=test_3_sar_
 ExecCommand=./test_2_s3ts3_python.py
 
-if [ ! ${NumOfParallels} > 0 ]; then
+if [ ! ${NumOfParallels} -gt 0 ]; then
     echo "Invalit Number of Paralles.(NumOfParalles=${NumOfParallels})"
     exit 1
 fi
@@ -26,7 +27,8 @@ NumOfsplitLines=$(( rows/NumOfParallels ))
 # Functions
 #------------------------
 function utcserial2date {
-    echo $(date -j -f '%s' ${1} '+%Y/%m/%d %H:%M:%S')
+    #echo $(date -j -f '%s' ${1} '+%Y/%m/%d %H:%M:%S') #for mac
+    echo $(date --date="@${1}" '+%Y/%m/%d %H:%M:%S')  #for linux
 }
 
 #------------------------
@@ -35,6 +37,10 @@ function utcserial2date {
 # Split Target_List_CSV_FILE
 split -a 5 -l ${NumOfsplitLines} ${Target_List_CSV_FILE} "test_3_target_list_"
 
+
+# Lunch sar command
+sar -A -o ${SarFile}${rows}_${NumOfParallels} 1 10000000 >/dev/null 2>&1 &
+SAR_PID=$!
 
 # Run by background
 StartTime=$(date '+%s')
@@ -58,6 +64,7 @@ echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartT
 echo "Result: ${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime})" 
 
 # Finall
+kill -9 ${SAR_PID}
 cat test_3_results_temp_* > test_3_results_${rows}_${NumOfParallels}.csv
 rm test_3_results_temp_*
 rm test_3_target_list_*
