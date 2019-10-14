@@ -14,7 +14,7 @@ cp /dev/null ${SummaryResultCSVFile}
 for parallel in ${ListNumOfParallels}
 do
     ${ExecCommand} ${parallel} ${SummaryResultCSVFile}
-    sleep 300
+    #sleep 30
 done
 
 echo "test_3_s3tos3_python_parallels.sh: Done!!"

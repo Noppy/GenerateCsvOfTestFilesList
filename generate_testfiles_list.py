@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  create_iamuser.py
+#  generate_testfiles_list.py
 #  ======
-#  Copyright (C) 2018 n.fujita
+#  Copyright (C) 2019 n.fujita
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ import datetime
 import math
 import urlparse
 
-
+import random
+import string
 
 # ---------------------------
 # Initialize Section
@@ -58,10 +59,16 @@ def get_args():
         required=False,
         help='Specify output CSV file.')
 
+    parser.add_argument('-r','--reverse',
+        action='store_true',
+        default=False,
+        required=False,
+        help='Reverse destination directory structure.')
+
     return( parser.parse_args() )
 
 
-def create_folders(period):
+def create_folders(args, period):
 
     # Initialize
     folders = []
@@ -73,11 +80,20 @@ def create_folders(period):
         print("Invalid StartDate or EndDate.")
         return
 
+    # Generate hash for revverse
+    reversehour = {}
+    for hour in range(0, 24):
+        hash = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(4)])
+        reversehour["{:02d}".format( hour )] = hash + '-' + "{:02d}".format( hour )
+
     # generate foler path
     pd = start_day
     while pd <= end_day:
         for hour in range(0,24):
-            folders.append( "{0:04d}/{1:02d}/{2:02d}/{3:02d}/".format( pd.year, pd.month, pd.day, hour) )
+            if args.reverse:
+                folders.append( "{0}/{1:02d}/{2:02d}/{3:04d}/".format( reversehour["{:02d}".format( hour )], pd.day, pd.month, pd.year) )
+            else:
+                folders.append( "{0:04d}/{1:02d}/{2:02d}/{3:02d}/".format( pd.year, pd.month, pd.day, hour) )
 
         # Add 1day
         pd += datetime.timedelta(days=1)
@@ -112,7 +128,7 @@ def load_configuration_file(args):
         conf["Period"] = data["Period"]
 
         # Generate folders list
-        conf["Folders"] = create_folders(conf["Period"])
+        conf["Folders"] = create_folders(args, conf["Period"])
         conf["NumberOfFileInFolder"] = float(conf["NumberOfFiles"]) / float(conf["Folders"]["NumberOfFolders"])
 
         # Set Sourece files list
