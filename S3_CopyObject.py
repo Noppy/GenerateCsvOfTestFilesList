@@ -27,6 +27,7 @@ import traceback
 
 import boto3
 from botocore.exceptions import ClientError
+from botocore.config import Config
 
 # ---------------------------
 # Initialize Section
@@ -55,6 +56,12 @@ def get_args():
         required=False,
         help='Specify output CSV file.')
 
+    parser.add_argument('-r','--retry',
+        action='store',
+        default='4',    #default of boto3
+        type=int,
+        help='Specify retry times')
+
     return( parser.parse_args() )
 
 
@@ -74,7 +81,12 @@ def main():
     writer = csv.writer(fp_results, lineterminator='\n')
 
     # Get session
-    s3 = boto3.client('s3')
+    config = Config(
+        retries=dict(
+            max_attempts = args.retry
+        )
+    )
+    s3 = boto3.client('s3', config=config)
 
     # copy 
     results = []

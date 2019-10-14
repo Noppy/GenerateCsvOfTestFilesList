@@ -4,6 +4,7 @@
 Target_List_CSV_FILE="list_of_copy_files.csv"
 NumOfParallels=$1
 SummaryResultCSVFile=$2
+AwsRetry=${3:-4}
 SarFile=test_3_sar_
 ExecCommand=./S3_CopyObject.py
 
@@ -35,7 +36,7 @@ function utcserial2date {
 # Main
 #------------------------
 # Start message
-echo "Start test: targetfile=${rows} parallels=${NumOfParallels}"
+echo "Start test: targetfile=${rows} parallels=${NumOfParallels} Retry=${AwsRetry}"
 
 # Split Target_List_CSV_FILE
 split -a 5 -l ${NumOfsplitLines} ${Target_List_CSV_FILE} "test_3_target_list_"
@@ -52,7 +53,7 @@ StartTime=$(date '+%s')
 i=0
 for target in test_3_target_list_*
 do
-    ${ExecCommand} -i ${target} -o test_3_results_temp_$(printf "%05d" $i) &
+    ${ExecCommand} -i ${target} -o test_3_results_temp_$(printf "%05d" $i) -r ${AwsRetry} &
     i=$((i+1))
 done
 
