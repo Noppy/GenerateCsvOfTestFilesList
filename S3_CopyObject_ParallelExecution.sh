@@ -5,7 +5,7 @@ Target_List_CSV_FILE="list_of_copy_files.csv"
 NumOfParallels=$1
 SummaryResultCSVFile=$2
 SarFile=test_3_sar_
-ExecCommand=./test_2_s3ts3_python.py
+ExecCommand=./S3_CopyObject.py
 
 if [ ! ${NumOfParallels} -gt 0 ]; then
     echo "Invalit Number of Paralles.(NumOfParalles=${NumOfParallels})"
@@ -76,7 +76,7 @@ total=$(( success+failed ))
 
 sar_queue=$(LANG=C sar -f ${SAR_FILE} -q|tail -1)
 sar_cpu=$(LANG=C sar -f ${SAR_FILE} -p|tail -1)
-
+echo "NumOfFiles, NumOfParallels, ExeTime(sec), StartTime, EndTime, SuccessedFiles, FailedFiles, TotalFiles, sar-queue, sar-cpu"
 echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${success},${failed},${total},${sar_queue},${sar_cpu}" >> ${SummaryResultCSVFile}
 echo "${rows},${NumOfParallels},$((EndTime-StartTime)),$(utcserial2date ${StartTime}),$(utcserial2date ${EndTime}),${success},${failed},${total},${sar_queue},${sar_cpu}"
 
